@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario con Arreglos</title>
+    <script src="js/Inventario.js"></script>
+    <script src="js/Producto.js"></script>
+</head>
+<body>
+    <!-- Todo nuestro proyecto debe estar dentro de un div-->
+    <div id="app">
+        <form> <!-- Metemos el método action para que puedan funcionar los botones-->
+            <!-- Usamos el for para asignar una parte de nuestra app-->
+            <!-- ========= SECCIÓN CAMPOS DE PRODUCTOS =========== -->
+            <fieldset id="AgregarProductos">
+                <legend>Agregar Productos</legend>
+                <label for="txtCodigo">       <!-- Usar el estandar [tipo] + nombre del campo -->
+                    Código: <input type="number" id="txtCodigo">
+                </label>
+                <br><br>
+                <label for="txtNombre">
+                   Nombre: <input type="text" id="txtNombre">
+                </label>
+                <br><br>
+                <label for="txtCantidad">
+                   Cantidad: <input type="number" id="txtCantidad">
+                </label>
+                <br><br>
+                <label for="txtCosto">
+                   Costo: <input type="number" id="txtCosto">
+                </label>
+                <br><br>
+
+                <!-- Botones de acción-->
+                <button type="button" id="btnAgregar">Agregar</button>
+                <button type="reset" id="btnCancelar">Cancelar</button>
+               <br>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>Eliminar Productos</legend>
+                <label for="btnEliminar">
+                    Codigo del Producto a Eliminar: <input type="text" id="txtEliminar">
+                    <br><br>
+                    <button type="button" id="btnEliminar">Eliminar</button>
+                    
+                </label>
+             </fieldset>
+             <br>
+             <fieldset>
+                <legend>Productos Disponibles</legend>
+                <button type="button" id="btnListar">Mostrar Productos</button>
+                <button type="button" id="btnListarInv">Mostrar Productos en Inverso</button>
+                <div id="divLista"><!--Acá se van a ver los productos--></div>
+             </fieldset>
+             <br>
+        </form>
+    </div>
+
+    
+    <!-- Apartado para mostrar los Productos-->
+    
+    <form action="">
+        <fieldset>
+            <legend>Operaciones Realizadas</legend>
+            <div id="detalles"><!-- Acá se van a mostrar los Productos dinamicamente--></div>
+        </fieldset>
+
+    </form>
+        
+    <script> //Tener acceso a los valores
+
+        let miInventario = new Inventario();
+        let detalles=document.getElementById("detalles");
+        let listaProductos=document.getElementById("divLista");
+
+        // Caso de agregar un producto
+        const btnAgregar = document.getElementById("btnAgregar");
+        btnAgregar.addEventListener("click",()=>{
+
+            //Obtenemos los valores de los campos del producto
+            let codigo = document.getElementById("txtCodigo").value;
+            let nombre = document.getElementById("txtNombre").value;
+            let cantidad = document.getElementById("txtCantidad").value;
+            let costo = document.getElementById("txtCosto").value;
+
+            // Limpiamos las cajas de texto
+            document.getElementById("txtCodigo").value = "";
+            document.getElementById("txtNombre").value = "";
+            document.getElementById("txtCantidad").value = "";
+            document.getElementById("txtCosto").value = "";
+
+
+            let nuevo = new Producto(codigo, nombre, cantidad, costo);
+            miInventario.agregar(nuevo);
+
+            //Retornamos el valor dentro del detalles
+            detalles.innerHTML += 
+            "<p>Código: "+codigo+" Nombre: "+nombre+" Cantidad: "+cantidad+" Costo: "+costo+"</p>";
+        });
+
+        // Caso de eliminar un producto
+        const btnEliminar = document.getElementById("btnEliminar");
+        btnEliminar.addEventListener("click",()=>{
+
+            //Obtenemos el valor del código a eliminar
+            let codigo = document.getElementById("txtEliminar").value;
+
+            //Verificamos que el codigo exista
+            if(miInventario.eliminar(codigo)==true)
+                detalles.innerHTML += 
+                "<h3>Se elimino el producto con codigo "+codigo+"</h3>";
+            else
+                detalles.innerHTML +=
+                "<h3>No se encontró el Producto "+codigo+"</h3>";
+        });
+
+        // Caso de leer/mostrar los producto
+        const btnListar = document.getElementById("btnListar");
+        btnListar.addEventListener("click",()=>{
+            listaProductos.innerHTML = miInventario.listar();
+        });
+
+        // Caso de leer/mostrar los productos al inverso
+        const btnListarInv = document.getElementById("btnListarInv");
+        btnListarInv.addEventListener("click",()=>{
+            listaProductos.innerHTML = miInventario.listarInverso();
+        });
+    </script>
+</body>
+</html>
